@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('domains', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Account::class, 'account_id');
+            $table->string('domain_id')->unique();
             $table->string('name');
             $table->timestamps();
         });

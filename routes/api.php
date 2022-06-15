@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::apiResources(['accounts' => \App\Http\Controllers\Api\AccountController::class]);
+Route::get('sync', [\App\Http\Controllers\Api\SyncController::class, 'sync']);
