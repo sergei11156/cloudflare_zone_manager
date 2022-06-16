@@ -52,7 +52,6 @@ class AccountController extends Controller
             'status' => $result,
             'account' => $account
         ]);
-        //
     }
 
     /**

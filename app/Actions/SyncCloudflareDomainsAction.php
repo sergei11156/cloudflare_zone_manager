@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Actions;
 
-use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Domain;
 use Cloudflare\API\Endpoints\Zones;
 
-class SyncController extends Controller
+class SyncCloudflareDomainsAction
 {
-    public function sync()
+
+
+    public function handle()
     {
         $accounts = Account::all();
         foreach ($accounts as $account) {
@@ -25,21 +26,13 @@ class SyncController extends Controller
             while ($totalPages >= $page) {
                 $list = $zones->listZones('', '', $page, $perPage);
                 foreach ($list->result as $zone) {
-
-                    $domain = new Domain();
-                    $domain->name = $zone->name;
-                    $domain->account_id = $account->id;
-                    $domain->domain_id = $zone->id;
-                    try {
-                        $domain->saveOrFail();
-                    } catch (\Throwable $e) {
-                        $domain->update();
-                    }
+                    Domain::updateOrCreate(['domain_id' => $zone->id], ['name' => $zone->name, 'account_id' => $account->id]);
                 }
                 $totalPages = $list->result_info->total_pages;
                 $page++;
             }
         }
+
+        return Domain::all();
     }
 }
-

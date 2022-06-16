@@ -19,4 +19,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResources(['accounts' => \App\Http\Controllers\Api\AccountController::class]);
-Route::get('sync', [\App\Http\Controllers\Api\SyncController::class, 'sync']);
+Route::get('sync', function (\App\Actions\SyncCloudflareDomainsAction $action) {
+    $domains = $action->handle();
+    return response()->json([
+        'status' => true,
+        'domains' => $domains
+    ]);
+});
+
